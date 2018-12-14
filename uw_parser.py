@@ -4,7 +4,6 @@
 
 def get_html(page):
     #  with urllib.request.urlopen(page) as file:
-
     file = open(page, "r")
     return file.read()
 
