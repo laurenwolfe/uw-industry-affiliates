@@ -1,6 +1,7 @@
 #  from bs4 import BeautifulSoup, Comment
 #  import urllib.request
 
+
 def get_html(page):
     #  with urllib.request.urlopen(page) as file:
 
@@ -25,13 +26,11 @@ def parse(html):
 
         c = c.split("\"")
 
-        if len(c) < 5:
-            print("error parsing data, index < 5")
-
-        website = c[1]
-        name_year = c[4].lstrip(">").rstrip(")")
-        name_year = name_year.split("</a> (Member since ")
-        companies.append((name_year[0], name_year[1], website, curr))
+        if len(c) == 5:
+            website = c[1]
+            name_year = c[4].lstrip(">").rstrip(")")
+            name_year = name_year.split("</a> (Member since ")
+            companies.append((name_year[0], name_year[1], website, curr))
     return companies
 
 
