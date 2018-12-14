@@ -1,20 +1,18 @@
 import parser
 from Company import *
+from MData import *
 
 #  current_affils, prev_affils = parser.scrape("https://www.cs.washington.edu/industrial_affiliates/current")
 #  parser.scrape("https://www.cs.washington.edu/industrial_affiliates/current")
 
 #  returns (company, year, website, current)
-aff_companies = parser.scrape("data/affiliate.html")
+affiliates = parser.scrape("data/affiliate.html")
 company_json = ""
+db_conn = MData()
 
-for aff_company in aff_companies:
-    res = Company(aff_company[0], aff_company[1], aff_company[2], aff_company[3])
-    json = res.get_json()
-    if company_json:
-        company_json = company_json + ', ' + json
-    else:
-        company_json = json
-
-
-
+for affiliate in affiliates:
+    affiliate_obj = Company(affiliate[0], affiliate[1], affiliate[2], affiliate[3])
+    j_dict = affiliate_obj.make_dict()
+    print(type(j_dict))
+    idx_id = db_conn.put_json(j_dict)
+    print(idx_id)
