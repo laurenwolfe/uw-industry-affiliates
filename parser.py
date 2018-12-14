@@ -1,58 +1,38 @@
-from bs4 import BeautifulSoup, Comment
-import urllib.request
-import re
-
+#  from bs4 import BeautifulSoup, Comment
+#  import urllib.request
 
 def get_html(page):
-    with urllib.request.urlopen(page) as response:
-        return response.read()
+    #  with urllib.request.urlopen(page) as file:
+
+    file = open(page, "r")
+    return file.read()
 
 
 def parse(html):
-    previous_companies = list()
-    current_companies = list()
+    companies = list()
+    curr = True
 
-    soup = BeautifulSoup(html, 'html.parser')
-    # select the section of html we want to strip
-    content = soup.find('div', attrs={'class', 'field-item even'})
+    #  soup = BeautifulSoup(html, 'html.parser')
+    #  content = soup.find('div', attrs={'class', 'field-item even'}).li
+    #  content = str(content).split("\n")
 
-    # get all current affiliates
-    html_li = content.ul.text
-    res = html_li.split('\n')
-    res = list(filter(is_blank, res))  # remove any empty elements in list
+    content = str(html).split("^^^")
+    for c in content:
+        c = c.strip("\', \'").strip()
 
-    for el in res:
-        current_companies.append(el.strip())
+        if c[0:2] == "<!":
+            curr = False
 
-    # get previous affiliates, remove comments and tags
-    comments = content.findAll(text=lambda text: isinstance(text, Comment))
+        c = c.split("\"")
 
-    for comment in comments:
-        stripped_comment = re.sub("<.*?>", "", comment)
-        previous_companies.append(stripped_comment.strip())  #remove anything within carets
+        if len(c) < 5:
+            print("error parsing data, index < 5")
 
-    # finish parsing elements, return a tuple with company
-    # name and the year they became affiliates
-    current_companies = parse_member_year(current_companies)
-    previous_companies = parse_member_year(previous_companies)
-    return current_companies, previous_companies
-
-
-# return the parsed year and name from a company list
-def parse_member_year(companies):
-    company_tuples = list()
-    for company in companies:
-        c = company.split("(")
-        c1 = c[0].rstrip()
-        c2 = re.sub(r'\D', "", c[1])
-        company_tuples.append((c1, c2))
-    return company_tuples
-
-
-def is_blank(x):
-    if x.isspace() or not x:
-        return False
-    return True
+        website = c[1]
+        name_year = c[4].lstrip(">").rstrip(")")
+        name_year = name_year.split("</a> (Member since ")
+        companies.append((name_year[0], name_year[1], website, curr))
+    return companies
 
 
 def scrape(page):
