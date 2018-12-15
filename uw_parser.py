@@ -1,4 +1,3 @@
-
 def get_html(page):
     file = open(page, "r")
     return file.read()
