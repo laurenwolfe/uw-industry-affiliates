@@ -1,9 +1,5 @@
-#  from bs4 import BeautifulSoup, Comment
-#  import urllib.request
-
 
 def get_html(page):
-    #  with urllib.request.urlopen(page) as file:
     file = open(page, "r")
     return file.read()
 
@@ -11,12 +7,8 @@ def get_html(page):
 def parse(html):
     companies = list()
     curr = True
-
-    #  soup = BeautifulSoup(html, 'html.parser')
-    #  content = soup.find('div', attrs={'class', 'field-item even'}).li
-    #  content = str(content).split("\n")
-
     content = str(html).split("^^^")
+
     for c in content:
         c = c.strip("\', \'").strip()
 
